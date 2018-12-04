@@ -58,21 +58,19 @@ public class PercolationUF implements IPercolate{
 	
 	@Override
 	public boolean isOpen(int row, int col) {
-		if (! inBounds(row,col)) {
-		throw new IndexOutOfBoundsException(
-		String.format("(%d,%d) not in bounds", row,col));
-		}
-		return myGrid[row][col];
+		if (! inBounds(row,col)) 
+		throw new IndexOutOfBoundsException(String.format("(%d,%d) out of bounds", row,col));
+		boolean ans=myGrid[row][col];
+		return ans;
 	}
 	
 	
 	@Override
 	public boolean isFull(int row, int col) {
-		if (! inBounds(row,col)) {
-		throw new IndexOutOfBoundsException(
-		String.format("(%d,%d) not in bounds", row,col));
-		}
-		return myFinder.connected(row*myGrid.length + col, VTOP);
+		if (!inBounds(row,col)) 
+		throw new IndexOutOfBoundsException(String.format("(%d,%d) out of bounds", row,col));
+		int a=row*myGrid.length + col;
+		return myFinder.connected(a, VTOP);
 	}
 	
 	@Override
@@ -88,8 +86,8 @@ public class PercolationUF implements IPercolate{
 	
 	
 	public boolean inBounds(int row, int col) {
-		if (row < 0 || row >= myGrid.length) return false;
-		if (col < 0 || col >= myGrid[0].length) return false;
+		if (col >= myGrid[0].length||col < 0) return false;
+		if (row >= myGrid.length||row < 0) return false;
 		return true;
 	}
 }
