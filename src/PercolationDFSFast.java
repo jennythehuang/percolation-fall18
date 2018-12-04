@@ -11,24 +11,19 @@ public class PercolationDFSFast extends PercolationDFS{
 	@Override
 	protected void updateOnOpen(int row, int col) {
 		//top row
-		if(row==0) { 
+		if(row==0) 
 			dfs(row, col);
-			return;}
 		
 		//check adjacent
-		if((isFull(row, col+1)) && (col+1 < myGrid[0].length)) {
+		if((isFull(row, col+1)) && (col+1 < myGrid[0].length)) 
 			dfs(row, col);
-			return;}
-		if((isFull(row, col-1)) && (col-1 >= 0)) {
+		if((isFull(row, col-1)) && (col-1 >= 0)) 
 			dfs(row, col);
-			return;}
 		
-		if((isFull(row+1,col)) && (row+1<myGrid[0].length)){
+		if((isFull(row+1,col)) && (row+1<myGrid[0].length))
 			dfs(row, col);
-			return;}
-		if(isFull(row-1, col)) {
+		if(isFull(row-1, col)) 
 			dfs(row, col);
-			return;}
 		
 
 	
