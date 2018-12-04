@@ -7,7 +7,7 @@ public class PercolationUF implements IPercolate{
 	private final int VTOP;
 	private final int VBOTTOM;
 	
-	//constructor
+	//constructor setting array, finder, and opencount, also sets final ints
 	PercolationUF(int size, IUnionFind finder) {
 		myGrid = new boolean[size][size];
 		VTOP = size*size;
@@ -18,47 +18,43 @@ public class PercolationUF implements IPercolate{
 	}
 	
 	@Override
+	//marks cell as open and connects with neighbors if it isnt already open
 	public void open(int row, int col) {
 		int size = myGrid.length;
-		if (! inBounds(row,col)) {
-		throw new IndexOutOfBoundsException(
-		String.format("(%d,%d) not in bounds", row,col));
-		}
+		if (!valid(row,col)) 
+		throw new IndexOutOfBoundsException(String.format("(%d,%d) not in bounds", row,col));
 		
-		if (isOpen(row,col)) {
+		if (isOpen(row,col))
 		return;
-		}
 		
 		myGrid[row][col] = true;
 		myOpenCount += 1;
+		
+		int a=row*size + col;
 		 
-		if (inBounds(row+1,col) && isOpen(row+1,col) && isOpen(row,col)) {
-		myFinder.union(row*size + col, (row+1) * size + col);
+		if (isOpen(row,col)) {
+			if (row == 0) 
+				myFinder.union(a, VTOP);
+			if (row==size-1) 
+				myFinder.union(a, VBOTTOM);
+			
+			if (validAndOpen(row+1,col)) 
+				myFinder.union(a, (row+1)*size+col);
+			if (validAndOpen(row-1,col)) 
+				myFinder.union(a, (row-1)*size+col);
+			
+			if (validAndOpen(row,col+1)) 
+				myFinder.union(a, a+1);}
+		if (validAndOpen(row,col-1)) 
+			myFinder.union(a, a-1);
 		
-		}
-		if (inBounds(row-1,col) && isOpen(row-1,col) && isOpen(row,col)) {
-		myFinder.union(row*size + col, (row-1) * size + col);
-		
-		}
-		if (inBounds(row,col+1) && isOpen(row,col+1) && isOpen(row,col)) {
-		myFinder.union(row*size + col, row*size + (col+1));
-		
-		}
-		if (inBounds(row,col-1) && isOpen(row,col-1) ) {
-		myFinder.union(row*size + col, row*size + (col-1));
-		}
-		if (row == 0 && isOpen(row,col)) {
-		myFinder.union(row*size + col, VTOP);
-		}
-		if (row == size - 1 && isOpen(row,col)) {
-		myFinder.union(row*size + col, VBOTTOM);
-		}
 	}
 	
 	
 	@Override
+	//returns appropriate myGrid value if in bound
 	public boolean isOpen(int row, int col) {
-		if (! inBounds(row,col)) 
+		if (!valid(row,col)) 
 		throw new IndexOutOfBoundsException(String.format("(%d,%d) out of bounds", row,col));
 		boolean ans=myGrid[row][col];
 		return ans;
@@ -66,28 +62,36 @@ public class PercolationUF implements IPercolate{
 	
 	
 	@Override
+	//checks if cell is connected to VTOP
 	public boolean isFull(int row, int col) {
-		if (!inBounds(row,col)) 
+		if (!valid(row,col)) 
 		throw new IndexOutOfBoundsException(String.format("(%d,%d) out of bounds", row,col));
 		int a=row*myGrid.length + col;
 		return myFinder.connected(a, VTOP);
 	}
 	
 	@Override
+	//sees is VTOP and VBOTTOM are connected
 	public boolean percolates() {
 		return myFinder.connected(VTOP, VBOTTOM);
 	}
 	
 	
 	@Override
+	//returns open site number
 	public int numberOfOpenSites() {
 		return myOpenCount;
 	}
 	
-	
-	public boolean inBounds(int row, int col) {
+	//helper method checking if value is in bounds
+	public boolean valid(int row, int col) {
 		if (col >= myGrid[0].length||col < 0) return false;
 		if (row >= myGrid.length||row < 0) return false;
 		return true;
+	}
+	
+	//helper checking is in bounds and open
+	public boolean validAndOpen(int row, int col) {
+		return (valid(row,col)&&(isOpen(row,col)));
 	}
 }
