@@ -10,21 +10,34 @@ public class PercolationDFSFast extends PercolationDFS{
 	//marks cells as full
 	@Override
 	protected void updateOnOpen(int row, int col) {
-		//top row
-		if(row==0) 
-			dfs(row, col);
-		
-		//check adjacent
-		if((isFull(row, col+1)) && (col+1 < myGrid[0].length)) 
-			dfs(row, col);
-		if((isFull(row, col-1)) && (col-1 >= 0)) 
-			dfs(row, col);
-		
-		if((isFull(row+1,col)) && (row+1<myGrid[0].length))
-			dfs(row, col);
-		if(isFull(row-1, col)) 
-			dfs(row, col);
-		
+		if (row == 0) {
+			dfs(row,col);
+			}
+
+			if (inBounds(row-1,col)) {
+			if(myGrid[row-1][col] == FULL && myGrid[row][col] == OPEN) {
+			dfs(row,col); 
+			}
+			}
+
+			if (inBounds(row,col-1)) {
+			if(myGrid[row][col-1] == FULL && myGrid[row][col] == OPEN) {
+			dfs(row,col); 
+			}
+			}
+
+			if (inBounds(row,col+1)) {
+			if(myGrid[row][col+1] == FULL && myGrid[row][col] == OPEN) {
+			dfs(row,col); 
+			}
+			}
+
+
+			if (inBounds(row+1,col)) {
+			if(myGrid[row+1][col] == FULL && myGrid[row][col] == OPEN) {
+			dfs(row,col); 
+			}
+			}
 
 	
 	}
